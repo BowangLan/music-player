@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import AlbumList from "../components/ui/AlbumList";
 import { search_itunes } from "../api";
 import { HiSearch } from "react-icons/hi";
+import SearchBar from "../components/SearchBar";
 import useLocalStorageState from "../hooks/useLocalStorageState";
 import { process_api_data } from "../util";
 import { Formik, Field, Form, useField, useFormikContext } from "formik";
@@ -12,7 +13,7 @@ import Layout from "../components/Layout";
 import { HiOutlineFilter } from "react-icons/hi";
 import IconContainer from "../components/icons/IconContainer";
 import { useMutation } from "react-query";
-import { AnimatePresence, motion } from "framer-motion";
+import { useSearchHistory } from "../store";
 
 const ResultTypes = [
   { value: "album", label: "Album" },
@@ -56,66 +57,6 @@ const TabField = ({}) => {
   );
 };
 
-const SearchBar = () => {
-  const { submitForm, setFieldValue } = useFormikContext();
-  const [historyVisible, setHistoryVisible] = useState(false);
-
-  const history = ["Arcane", "Hello", "Piano"];
-  return (
-    <div className="relative flex-1 flex items-center gap-4 h-12 rounded-full bg-white shadow-sm">
-      <Field
-        id="searchText"
-        name="searchText"
-        placeholder="What do you want to hear?"
-        className="peer pl-6 pr-4 flex-1 outline-none"
-        onFocus={(e) => {
-          console.log("search focus in");
-          setHistoryVisible(true);
-        }}
-        onBlur={(e) => {
-          console.log("search focus out");
-          setHistoryVisible(false);
-        }}
-      />
-      <HiSearch
-        size={24}
-        className="flex-none w-12 aspect-square text-slate-400 cursor-pointer transition-all duration-300 rounded-full"
-        onClick={submitForm}
-      />
-
-      {/* History pop up*/}
-      <AnimatePresence>
-        {historyVisible && (
-          <motion.ul
-            variants={{
-              show: { opacity: 1, y: 0, transition: { ease: "easeInOut" } },
-              hidden: { opacity: 0, y: -10, transition: { ease: "easeInOut" } },
-            }}
-            initial="hidden"
-            animate="show"
-            exit="hidden"
-            className="absolute top-[100%] right-0 left-0 mt-2 bg-white shadow-md rounded-md overflow-hidden"
-          >
-            {history.map((item, i) => (
-              <li
-                key={i}
-                className="px-4 py-2 hover:bg-slate-100 cursor-pointer"
-                onClick={() => {
-                  console.log("click history item", item);
-                  setFieldValue("searchText", item);
-                  submitForm();
-                }}
-              >
-                {item}
-              </li>
-            ))}
-          </motion.ul>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-};
-
 export default function Search() {
   const [searchResult, setSearchResult] = useLocalStorageState(
     "search_result",
@@ -132,6 +73,20 @@ export default function Search() {
     }
   );
   const [submitted, setSubmitted] = useState(false);
+
+  const {
+    list: history,
+    getOne: getOneSearchHistory,
+    addOne: addOneSearchHistory,
+    removeOne: removeOneSearchHistory,
+  } = useSearchHistory();
+
+  const addHistory = (text) => {
+    if (getOneSearchHistory(text)) {
+      removeOneSearchHistory(text);
+    }
+    addOneSearchHistory(text);
+  };
 
   console.log("submitted formvalues", submittedValues);
 
@@ -175,6 +130,7 @@ export default function Search() {
           onSubmit={(values) => {
             console.log("formik submit", values);
             setSubmittedValues(values);
+            addHistory(values.searchText);
             // searchMutation.mutate(values);
             // fetchAlbumList(values);
           }}

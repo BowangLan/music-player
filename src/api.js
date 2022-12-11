@@ -2,10 +2,12 @@ const ALBUM_QUERY_TEMPLATE =
   "https://itunes.apple.com/search?limit=125&term={searchTerm}&entity=album&attribute=allArtistTerm";
 
 const contruct_url_query = (query) => {
-  return query
-    .map((item) => {
-      if (Array.isArray(item)) {
-        return item.join(",");
+  return Object.keys(query)
+    .map((k) => {
+      if (Array.isArray(query[k])) {
+        return k + "=" + query[k].join(",");
+      } else {
+        return k + "=" + query[k];
       }
     })
     .join("&");
@@ -51,9 +53,7 @@ const itunes_search = (params) => {
 };
 
 export const lookup_multiple = (id_list) => {
-  return fetch_json(
-    `https://itunes.apple.com/search?${contruct_url_query(params)}`
-  );
+  return itunes_lookup({ id: id_list });
 };
 
 export const get_album = (id) => {

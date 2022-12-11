@@ -30,7 +30,7 @@ const LikeButton = ({ size, item, exists, add, remove, ...props }) => {
 };
 
 export function SongLikeButton({ song, size, ...props }) {
-  const { getById, addOne, removeById } = useFSongs();
+  const { getOne: getById, addOne, removeOne: removeById } = useFSongs();
   return (
     <LikeButton
       size={size}
@@ -44,7 +44,7 @@ export function SongLikeButton({ song, size, ...props }) {
 }
 
 export function AlbumLikeButton({ album, size }) {
-  const { getById, addOne, removeById } = useFAlbums();
+  const { getOne: getById, addOne, removeOne: removeById } = useFAlbums();
   return (
     <LikeButton
       size={size}
@@ -57,7 +57,7 @@ export function AlbumLikeButton({ album, size }) {
 }
 
 export function ArtistLikeButton({ artist, size }) {
-  const { getById, addOne, removeById } = useFArtists();
+  const { getOne: getById, addOne, removeOne: removeById } = useFArtists();
   return (
     <LikeButton
       size={size}

@@ -32,7 +32,7 @@ export default function AlbumList({ data }) {
           initial="hidden"
           animate="show"
           whileHover="hover"
-          key={i}
+          key={`${i} ${item.collectionId}}`}
         >
           <Link href={`/album/${item.collectionId}`} key={i}>
             <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-slate-200 shadow-md group-hover:shadow-lg">
