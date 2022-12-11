@@ -1,32 +1,54 @@
 import { useRef, useState, useEffect } from "react";
 import { usePlayingSong } from "../context/playingSong";
-import { MdSkipNext, MdSkipPrevious, MdVolumeMute, MdVolumeUp, MdOutlinePlayCircleFilled, MdOutlinePauseCircleFilled } from "react-icons/md";
+import {
+  MdSkipNext,
+  MdSkipPrevious,
+  MdVolumeMute,
+  MdVolumeUp,
+  MdOutlinePlayCircleFilled,
+  MdOutlinePauseCircleFilled,
+} from "react-icons/md";
 import { HiPause, HiPlay, HiVolumeUp, HiVolumeOff } from "react-icons/hi";
 import { ImSpinner2 } from "react-icons/im";
 
-export const PlayButton = ({size = 44}) => {
+const stopPropagationWrapper = (fn) => {
+  return (e) => {
+    e.stopPropagation();
+    fn();
+  };
+};
+
+export const PlayButton = ({ size = 44 }) => {
   const { isPlaying, togglePlaying, isLoading } = usePlayingSong();
   if (isLoading) {
     return <ImSpinner2 size={size} className="animate-spin" />;
   }
   return isPlaying ? (
-    <MdOutlinePauseCircleFilled size={size} onClick={togglePlaying} />
+    <MdOutlinePauseCircleFilled
+      size={size}
+      onClick={stopPropagationWrapper(togglePlaying)}
+    />
   ) : (
-    <MdOutlinePlayCircleFilled size={size} onClick={togglePlaying} />
+    <MdOutlinePlayCircleFilled
+      size={size}
+      onClick={stopPropagationWrapper(togglePlaying)}
+    />
   );
 };
 
-export const PrevButton = ({size = 44}) => {
+export const PrevButton = ({ size = 44 }) => {
   const { prevSong } = usePlayingSong();
-  return <MdSkipPrevious size={size} onClick={prevSong} />;
-}
+  return (
+    <MdSkipPrevious size={size} onClick={stopPropagationWrapper(prevSong)} />
+  );
+};
 
-export const NextButton = ({size = 44}) => {
+export const NextButton = ({ size = 44 }) => {
   const { nextSong } = usePlayingSong();
-  return <MdSkipNext size={size} onClick={nextSong} />
-}
+  return <MdSkipNext size={size} onClick={stopPropagationWrapper(nextSong)} />;
+};
 
-export const VolumeBar = ({size = 32}) => {
+export const VolumeBar = ({ size = 32 }) => {
   const { audioRef, playingSong } = usePlayingSong();
   const vRef = useRef();
   const [currentVol, setCurrentVol] = useState(0);
@@ -71,7 +93,11 @@ export const VolumeBar = ({size = 32}) => {
       </button> */}
       {/* <div className="w-0 group-hover:w-1/2 transition-all duration-300 overflow-hidden"> */}
       <div className="w-full flex items-center transition-all duration-300 overflow-hidden">
-        <MdVolumeMute size={size} className="flex-none" onClick={handleVClick} />
+        <MdVolumeMute
+          size={size}
+          className="flex-none"
+          onClick={handleVClick}
+        />
         <input
           ref={vRef}
           type="range"
@@ -83,12 +109,11 @@ export const VolumeBar = ({size = 32}) => {
         />
         <MdVolumeUp size={size} className="flex-none" />
       </div>
-
     </div>
   );
 };
 
-export default function AudioControls({size = 44, className = ''}) {
+export default function AudioControls({ size = 44, className = "" }) {
   return (
     <div className={"flex justify-center items-center " + className}>
       <div className="flex gap-4 items-center">

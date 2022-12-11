@@ -1,15 +1,20 @@
 import React from "react";
 import Sidebar from "./SideBar";
-import NavBar from "./NavBar";
+import Header from "./Header";
+import BottomPlayBar from "./ui/BottomPlayBar";
 
-export default function Layout({ children }) {
+export default function Layout({ children, absolute }) {
   return (
-    <div className="flex h-screen w-screen">
+    <div className="flex w-full min-w-screen max-w-screen h-full max-h-screen bg-slate-100 overflow-hidden">
       <Sidebar />
-      {/* <NavBar /> */}
-      <main className="px-8 flex-1 bg-slate-100 overflow-y-scroll">
-        {children}
-      </main>
+      <div className="relative flex-1 max-w-screen h-full max-h-screen overflow-y-scroll flex flex-col">
+        <Header absolute={absolute} />
+        <main className="min-h-screen overflow-y-scroll">
+          {children}
+          <div className="h-20"></div>
+        </main>
+      </div>
+      <BottomPlayBar />
     </div>
   );
 }

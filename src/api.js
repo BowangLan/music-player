@@ -1,7 +1,23 @@
 const ALBUM_QUERY_TEMPLATE =
   "https://itunes.apple.com/search?limit=125&term={searchTerm}&entity=album&attribute=allArtistTerm";
 
-export const search_itunes = (term, options) => {
+const contruct_url_query = (query) => {
+  let output = "";
+  let init = true;
+  Object.keys(query).forEach((key) => {
+    if (!query[key]) return;
+    if (!init) output += "&";
+    output += key + "=" + query[key];
+    init = false;
+  });
+  return output;
+};
+
+const fetch_json = (...params) => {
+  return fetch(...params).then((res) => res.json());
+};
+
+export const search_itunes = (term, { ...options }) => {
   let url = "https://itunes.apple.com/search?term=" + term;
   const allowed_option_keys = [
     "limit",
@@ -19,35 +35,34 @@ export const search_itunes = (term, options) => {
 
   console.log("url: " + url);
 
-  return fetch(url).then((response) => {
-    return response.json();
-  }).catch(err => err);
+  return fetch(url)
+    .then((response) => {
+      return response.json();
+    })
+    .catch((err) => err);
 };
 
-export const getSpotifyLoginURL = () => {
-  const client_id = "ea880b1b5cf443a3b8ab487aeb98fe1a";
-  const scope = "streaming,user-read-private,user-read-email,user-read-playback-state";
-  const redirect_uri = "http://localhost:3000/callback";
-
-  const params = {
-    client_id: client_id,
-    response_type: "token",
-    redirect_uri: redirect_uri,
-    scope: scope,
-    show_dialog: true
-    // state: state
-  };
-
-  let url = 'https://accounts.spotify.com/authorize?'
-  Object.keys(params).forEach((k, i) => {
-    let s = i === 0 ? '' : '&'
-    s += k + '=' + params[k]
-    url += s
-  })
-  
-  return url;
+// const lookup = (id, entity, limit) => {
+//   return fetch_json(`https://itunes.apple.com/lookup?id=${id}&entity=${entity}`)
+// }
+export const lookup_multiple = (id_list) => {
+  return fetch_json("https://itunes.apple.com/lookup?id=" + id_list.join(","));
 };
 
-export const spotify_get_album = (id) => {
+export const get_album = (id) => {
+  return fetch_json(
+    `https://itunes.apple.com/lookup?id=${id}&limit=50&entity=song`
+  );
+};
 
-}
+export const get_artist = (id) => {
+  return fetch_json(`https://itunes.apple.com/lookup?id=${id}`);
+};
+
+export const get_artist_songs = (id, limit = 50, entity = "music") => {
+  return fetch_json(`https://itunes.apple.com/lookup?id=${id}&entity=song`);
+};
+
+export const get_artist_albums = (id, limit = 50, entity = "music") => {
+  return fetch_json(`https://itunes.apple.com/lookup?id=${id}&entity=album`);
+};
