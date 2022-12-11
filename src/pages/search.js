@@ -12,6 +12,7 @@ import Layout from "../components/Layout";
 import { HiOutlineFilter } from "react-icons/hi";
 import IconContainer from "../components/icons/IconContainer";
 import { useMutation } from "react-query";
+import { AnimatePresence, motion } from "framer-motion";
 
 const ResultTypes = [
   { value: "album", label: "Album" },
@@ -56,20 +57,61 @@ const TabField = ({}) => {
 };
 
 const SearchBar = () => {
-  const { submitForm } = useFormikContext();
+  const { submitForm, setFieldValue } = useFormikContext();
+  const [historyVisible, setHistoryVisible] = useState(false);
+
+  const history = ["Arcane", "Hello", "Piano"];
   return (
-    <div className="flex-1 flex items-center gap-4 h-12 rounded-full bg-white shadow-sm overflow-hidden">
+    <div className="relative flex-1 flex items-center gap-4 h-12 rounded-full bg-white shadow-sm">
       <Field
         id="searchText"
         name="searchText"
         placeholder="What do you want to hear?"
-        className="pl-6 pr-4 flex-1 outline-none"
+        className="peer pl-6 pr-4 flex-1 outline-none"
+        onFocus={(e) => {
+          console.log("search focus in");
+          setHistoryVisible(true);
+        }}
+        onBlur={(e) => {
+          console.log("search focus out");
+          setHistoryVisible(false);
+        }}
       />
       <HiSearch
         size={24}
         className="flex-none w-12 aspect-square text-slate-400 cursor-pointer transition-all duration-300 rounded-full"
         onClick={submitForm}
       />
+
+      {/* History pop up*/}
+      <AnimatePresence>
+        {historyVisible && (
+          <motion.ul
+            variants={{
+              show: { opacity: 1, y: 0, transition: { ease: "easeInOut" } },
+              hidden: { opacity: 0, y: -10, transition: { ease: "easeInOut" } },
+            }}
+            initial="hidden"
+            animate="show"
+            exit="hidden"
+            className="absolute top-[100%] right-0 left-0 mt-2 bg-white shadow-md rounded-md overflow-hidden"
+          >
+            {history.map((item, i) => (
+              <li
+                key={i}
+                className="px-4 py-2 hover:bg-slate-100 cursor-pointer"
+                onClick={() => {
+                  console.log("click history item", item);
+                  setFieldValue("searchText", item);
+                  submitForm();
+                }}
+              >
+                {item}
+              </li>
+            ))}
+          </motion.ul>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
@@ -115,36 +157,6 @@ export default function Search() {
   useEffect(() => {
     setSubmitted(true);
   }, [submittedValues]);
-
-  // function fetchAlbumList(formValues) {
-  //   console.log("start fetching");
-  //   setIsSearching(true);
-  //   setAlertMessage(null);
-
-  //   search_itunes(formValues.searchText, {
-  //     limit: 55,
-  //     entity: formValues.resultType,
-  //     attribute: formValues.inputType,
-  //   })
-  //     .then((data) => {
-  //       if (data.results.length === 0) {
-  //         setAlertMessage("No results found.");
-  //       }
-  //       let rData;
-  //       if (submittedValues.resultType === "album") {
-  //         rData = process_itunes_album_result(data.results);
-  //       } else if (submittedValues.resultType === "song") {
-  //         rData = process_itunes_tracks(data.results);
-  //       }
-  //       setSearchResult(rData);
-  //     })
-  //     .catch((error) => {
-  //       setAlertMessage(error.message);
-  //     })
-  //     .then(() => {
-  //       setIsSearching(false);
-  //     });
-  // }
 
   console.log("render search page", { searchResult });
 

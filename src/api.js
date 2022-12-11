@@ -2,15 +2,13 @@ const ALBUM_QUERY_TEMPLATE =
   "https://itunes.apple.com/search?limit=125&term={searchTerm}&entity=album&attribute=allArtistTerm";
 
 const contruct_url_query = (query) => {
-  let output = "";
-  let init = true;
-  Object.keys(query).forEach((key) => {
-    if (!query[key]) return;
-    if (!init) output += "&";
-    output += key + "=" + query[key];
-    init = false;
-  });
-  return output;
+  return query
+    .map((item) => {
+      if (Array.isArray(item)) {
+        return item.join(",");
+      }
+    })
+    .join("&");
 };
 
 const fetch_json = (...params) => {
@@ -27,11 +25,9 @@ export const search_itunes = (term, { ...options }) => {
     "country",
   ];
 
-  Object.keys(options)
-    .filter((k) => allowed_option_keys.includes(k))
-    .forEach((k) => {
-      url += "&" + k + "=" + options[k];
-    });
+  Object.keys(options).forEach((k) => {
+    url += "&" + k + "=" + options[k];
+  });
 
   console.log("url: " + url);
 
@@ -42,27 +38,36 @@ export const search_itunes = (term, { ...options }) => {
     .catch((err) => err);
 };
 
-// const lookup = (id, entity, limit) => {
-//   return fetch_json(`https://itunes.apple.com/lookup?id=${id}&entity=${entity}`)
-// }
-export const lookup_multiple = (id_list) => {
-  return fetch_json("https://itunes.apple.com/lookup?id=" + id_list.join(","));
-};
-
-export const get_album = (id) => {
+const itunes_lookup = (params) => {
   return fetch_json(
-    `https://itunes.apple.com/lookup?id=${id}&limit=50&entity=song`
+    `https://itunes.apple.com/lookup?${contruct_url_query(params)}`
   );
 };
 
+const itunes_search = (params) => {
+  return fetch_json(
+    `https://itunes.apple.com/lookup?${contruct_url_query(params)}`
+  );
+};
+
+export const lookup_multiple = (id_list) => {
+  return fetch_json(
+    `https://itunes.apple.com/search?${contruct_url_query(params)}`
+  );
+};
+
+export const get_album = (id) => {
+  return itunes_lookup({ id, limit: 20, entity: "song" });
+};
+
 export const get_artist = (id) => {
-  return fetch_json(`https://itunes.apple.com/lookup?id=${id}`);
+  return itunes_lookup({ id });
 };
 
-export const get_artist_songs = (id, limit = 50, entity = "music") => {
-  return fetch_json(`https://itunes.apple.com/lookup?id=${id}&entity=song`);
+export const get_artist_songs = (id, limit, offset, entity = "music") => {
+  return itunes_lookup({ id, limit, offset, entity });
 };
 
-export const get_artist_albums = (id, limit = 50, entity = "music") => {
-  return fetch_json(`https://itunes.apple.com/lookup?id=${id}&entity=album`);
+export const get_artist_albums = (id, limit, offset, entity = "music") => {
+  return itunes_lookup({ id, limit, offset, entity });
 };

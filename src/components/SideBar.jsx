@@ -83,7 +83,7 @@ export default function SideBar() {
         ))}
       </ul>
       <div className="flex-1"></div>
-      <SideBarPlayer />
+      {/* <SideBarPlayer /> */}
     </aside>
   );
 }

@@ -97,7 +97,7 @@ const PlayerLayer = ({ visible, close }) => {
               <div className="flex-1 w-full px-8 md:px-0 md:max-w-md lg:max-w-lg mx-auto flex flex-col items-center justify-center">
                 {/* Image */}
                 <div
-                  className="relative flex-none h-80 w-80 md:h-96 md:w-96 rounded-full overflow-hidden animate-spin [animation-duration:15s]"
+                  className="relative flex-none h-64 w-64 sm:h-80 sm:w-80 md:h-96 md:w-96 rounded-full overflow-hidden animate-spin [animation-duration:15s]"
                   style={{
                     animationDuration: "18s",
                     animationPlayState: isPlaying ? "running" : "paused",
@@ -117,7 +117,7 @@ const PlayerLayer = ({ visible, close }) => {
                   {/* Track name, artist, and like button */}
                   <div className="w-full flex items-center">
                     <div className="min-w-[0] flex-1 flex flex-col gap-1">
-                      <div className="text-white text-2xl font-medium">
+                      <div className="text-white text-2xl font-medium line-clamp-2">
                         {playingSong.trackName}
                       </div>
                       <ArtistText
