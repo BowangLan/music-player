@@ -18,15 +18,15 @@ const BoxTitle = ({ tab, changeTab, tabs }) => {
         My Favorites
       </span>
       <div className="flex">
-        <div className="flex">
+        <div className="flex gap-1 mt-2 md:mt-0">
           {tabs.map((t, i) => (
             <div
               key={i}
               className={
-                "w-24 text-center py-2 " +
+                "px-5 text-center py-1.5 " +
                 (tab === i ? "bg-slate-200" : "") +
-                " cursor-pointer"
-              }
+                " cursor-pointer hover:bg-blue-200 rounded-lg transition-all duration-300"
+             }
               onClick={() => changeTab(i)}
             >
               {t.label}
