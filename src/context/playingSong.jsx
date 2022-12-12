@@ -2,6 +2,20 @@ import React, { useState, useEffect, useRef } from "react";
 
 const PlayingSongContext = React.createContext();
 
+const play_mode_values = ["loop_queue", "loop_single", "shuffle"];
+const usePlayMode = () => {
+  const [playMode, setPlayMode] = useState(0);
+
+  const handleClickPlayMode = () => {
+    if (playMode === play_mode_values.length - 1) {
+      setPlayMode(() => 0);
+    } else {
+      setPlayMode((old) => old + 1);
+    }
+  };
+
+  return { playMode, setPlayMode, handleClickPlayMode };
+};
 
 export const PlayingSongWrapper = ({ children }) => {
   const [playingSong, setPlayingSong] = useState(null);
@@ -9,6 +23,8 @@ export const PlayingSongWrapper = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [queue, setQueue] = useState([]);
   const [duration, setDuration] = useState(0);
+
+  const { playMode, handleClickPlayMode } = usePlayMode();
 
   const audioRef = useRef();
 
@@ -33,16 +49,28 @@ export const PlayingSongWrapper = ({ children }) => {
     return i;
   };
 
-  const nextSong = () => {
+  const playNextSongInQueue = () => {
     if (queue.length === 0) {
       return;
     }
     const i = getCurrentSongQueueIndex();
-    console.log("next song, cur i = ", i);
     if (i === queue.length - 1) {
       setPlayingSong(() => queue[0]);
     } else {
       setPlayingSong(() => queue[i + 1]);
+    }
+  };
+
+  const nextSong = () => {
+    if (queue.length === 0) {
+      return;
+    }
+
+    if (playMode === 2) {
+      const i = Math.round(Math.random() * queue.length);
+      setPlayingSong(() => queue[i]);
+    } else {
+      playNextSongInQueue();
     }
   };
 
@@ -89,8 +117,11 @@ export const PlayingSongWrapper = ({ children }) => {
 
     audioRef.current.addEventListener("ended", () => {
       console.log("song ended");
-      setIsPlaying(false);
-      if (queue.length !== 0) {
+      console.log("play mode", playMode);
+      if (playMode === 1) {
+        audioRef.current.play();
+      } else {
+        setIsPlaying(false);
         nextSong();
       }
     });
@@ -106,7 +137,7 @@ export const PlayingSongWrapper = ({ children }) => {
       }
     });
   }, [audioRef.current]);
-  
+
   return (
     <PlayingSongContext.Provider
       value={{
@@ -124,6 +155,8 @@ export const PlayingSongWrapper = ({ children }) => {
         nextSong,
         playQueue,
         getCurrentSongQueueIndex,
+        playMode,
+        handleClickPlayMode,
       }}
     >
       {children}

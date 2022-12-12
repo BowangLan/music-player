@@ -9,6 +9,7 @@ import { HiChevronDown, HiChevronUp } from "react-icons/hi";
 import ArtistText from "./ArtistText";
 import { seconds_format } from "../../util";
 import MediaProgressInputWrapper from "../MediaProgressInputWrapper";
+import PlayModeBottom from "../PlayModeBottom";
 
 const bottom_play_bar_transition = {
   duration: 0.3,
@@ -170,6 +171,7 @@ const BottomPlayBarComponent = ({ visible, setPlayerVisible }) => {
           >
             {/* Middle */}
             <AudioControls size={38} className="" />
+
             {/* Left */}
             <div className="absolute left-0 top-0 bottom-0 md:w-1/3 lg:w-1/4 max-w-[18rem] overflow-hidden flex items-center gap-3">
               {playingSong && (
@@ -179,7 +181,10 @@ const BottomPlayBarComponent = ({ visible, setPlayerVisible }) => {
                     onClick={() => setPlayerVisible(true)}
                   >
                     <div className="absolute group-hover:bg-black/30 inset-0 rounded-full flex items-center justify-center bg-transparent z-20">
-                      <HiChevronUp size={28} className="text-transparent group-hover:text-slate-200" />
+                      <HiChevronUp
+                        size={28}
+                        className="text-transparent group-hover:text-slate-200"
+                      />
                     </div>
                     <Image
                       src={playingSong.imgSrcMd}
@@ -205,6 +210,11 @@ const BottomPlayBarComponent = ({ visible, setPlayerVisible }) => {
                   </div>
                 </>
               )}
+            </div>
+
+            {/* Right */}
+            <div className="absolute right-0 top-0 bottom-0 overflow-hidden flex items-center gap-3">
+              <PlayModeBottom />
             </div>
           </div>
         </motion.div>
