@@ -65,12 +65,6 @@ const PlayerLayer = ({ visible, close }) => {
           initial="hidden"
           animate="show"
           exit="hidden"
-          onPanEnd={(e, info) => {
-            console.log("pan end", info);
-            if (info.offset.y > 5 && Math.abs(info.offset.x) < 20) {
-              close();
-            }
-          }}
         >
           <div className="relative w-full h-full">
             {/* background */}
@@ -94,8 +88,8 @@ const PlayerLayer = ({ visible, close }) => {
               </div>
             </div>
             {/* actual content */}
-            <div className="absolute inset-0 flex flex-col mt-8">
-              <div className="flex-1 w-full px-8 md:px-0 md:max-w-md lg:max-w-lg mx-auto flex flex-col items-center justify-center">
+            <div className="absolute inset-0 flex flex-col items-center justify-center mt-8">
+              <div className="flex-1 px-8 md:px-0 w-full md:max-w-md lg:max-w-xl max-h-[75%] sm:max-h-[70%] flex flex-col items-center justify-between">
                 {/* Image */}
                 <div
                   className="relative flex-none h-64 w-64 sm:h-80 sm:w-80 md:h-96 md:w-96 rounded-full overflow-hidden animate-spin [animation-duration:15s]"
@@ -114,9 +108,9 @@ const PlayerLayer = ({ visible, close }) => {
                   />
                 </div>
 
-                <div className="w-full sm:mt-6 md:mt-8 flex flex-col gap-6 md:gap-8">
+                <div className="w-full sm:mt-8 flex flex-col gap-6 sm:gap-8">
                   {/* Track name, artist, and like button */}
-                  <div className="w-full flex items-center">
+                  <div className="w-full flex items-center gap-2">
                     <div className="min-w-[0] flex-1 flex flex-col gap-1">
                       <div className="text-white text-2xl font-medium line-clamp-2">
                         {playingSong.trackName}
@@ -173,7 +167,7 @@ const BottomPlayBarComponent = ({ visible, setPlayerVisible }) => {
             <AudioControls size={38} className="" />
 
             {/* Left */}
-            <div className="absolute left-0 top-0 bottom-0 md:w-1/3 lg:w-1/4 max-w-[18rem] overflow-hidden flex items-center gap-3">
+            <div className="absolute left-0 top-0 bottom-0 w-1/3 lg:w-1/4 max-w-[18rem] overflow-hidden flex items-center gap-3">
               {playingSong && (
                 <>
                   <div

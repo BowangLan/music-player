@@ -4,17 +4,6 @@ import Link from "next/link";
 import { AlbumLikeButton } from "../../LikeButton";
 import ArtistText from "../../ui/ArtistText";
 
-const extract_colors_from_img = (img) => {
-  if (img == null) return;
-  console.log("extract color from img", img);
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-  ctx.drawImage(img, 0, 0, 1, 1);
-  const i = ctx.getImageData(0, 0, 1, 1).data;
-  const c1 = `rgba(${i[0]},${i[1]},${i[2]},${i[3]})`;
-  return c1;
-};
-
 const PlayAlbumButton = ({ album, playAlbum }) => {
   return (
     <button
@@ -26,30 +15,43 @@ const PlayAlbumButton = ({ album, playAlbum }) => {
   );
 };
 
+const AlbumCoverImage = ({ src, alt }) => {
+  return (
+    <div className="relative w-28 h-28 sm:w-44 sm:h-44 md:w-52 md:h-52 z-10">
+      <Image
+        src={src}
+        alt="Album Cover"
+        layout="fill"
+        className="rounded-3xl cover-image"
+      />
+    </div>
+  );
+};
+
+const AlbumCoverBackground = ({ src }) => {
+  return (
+    <>
+      <div
+        className={`absolute inset-0 opacity-20`}
+        // style={{ background: `linear-gradient(0deg, ${coverColor} 0%, white 100%)`}}
+      >
+        <div className="relative w-full h-full">
+          <Image src={src} alt="Album Cover Layer" layout="fill" />
+        </div>
+      </div>
+      <div className="absolute inset-0 backdrop-blur-2xl z-0 "></div>
+    </>
+  );
+};
+
 const AlbumPageHeader = ({ album, playAlbum }) => {
   const imgSrc = album.artworkUrl100.replace("100x100", "270x270");
-  const [coverColor, setCoverColor] = useState();
-  useEffect(() => {
-    setTimeout(() => {
-      const img = document.querySelector(".cover-image");
-      const imgColor = extract_colors_from_img(img);
-      console.log("img color", imgColor);
-      setCoverColor(imgColor);
-    }, 1500);
-  }, [album.artworkUrl100]);
   return (
     <div className={`w-full pt-20 pb-4 relative`}>
       <div className="px-6 sm:px-8 py-4 w-full h-full flex flex-col gap-6 bg-transparent z-10">
         <div className="w-full h-full flex gap-6">
           {/* Album image */}
-          <div className="relative w-28 h-28 sm:w-44 sm:h-44 md:w-52 md:h-52 z-10">
-            <Image
-              src={imgSrc}
-              alt="Album Cover"
-              layout="fill"
-              className="rounded-3xl cover-image"
-            />
-          </div>
+          <AlbumCoverImage src={imgSrc} alt={album.collectionName} />
 
           {/* Album info */}
           <div className="z-10 flex-1 self-stretch flex flex-col justify-between sm:gap-1">
@@ -82,19 +84,7 @@ const AlbumPageHeader = ({ album, playAlbum }) => {
           <PlayAlbumButton album={album} playAlbum={playAlbum} />
         </div>
       </div>
-      <div
-        className={`absolute inset-0 opacity-20`}
-        // style={{ background: `linear-gradient(0deg, ${coverColor} 0%, white 100%)`}}
-      >
-        <div className="relative w-full h-full">
-          <Image
-            src={album.artworkUrl100}
-            alt="Album Cover Layer"
-            layout="fill"
-          />
-        </div>
-      </div>
-      <div className="absolute inset-0 backdrop-blur-2xl z-0 "></div>
+      <AlbumCoverBackground src={album.artworkUrl100} />
     </div>
   );
 };

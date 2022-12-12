@@ -60,7 +60,7 @@ const SongItem = ({
   showCollection = true,
 }) => {
   return (
-    <SongContainer isPlaying={isPlaying} i={i} p="py-3">
+    <SongContainer isPlaying={isPlaying} i={i} p="py-2 px-2">
       {/* song index / play bottom */}
       {showIndex ? (
         <IndexOrPlayButton i={i} isPlaying={isPlaying} />

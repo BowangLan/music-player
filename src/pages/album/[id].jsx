@@ -49,7 +49,7 @@ export default function AlbumPage() {
       )}
       {alData && <AlbumPageHeader album={alData} playAlbum={playAlbum} />}
       {/* <div className="d-flex flex-wrap">{trackElemArray}</div> */}
-      <div className="pb-2 sm:py-8 sm:px-6">
+      <div className="pb-2 py-3">
         {songs && (
           <SongList songs={songs} className="" showCollection={false} />
         )}

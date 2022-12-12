@@ -13,12 +13,12 @@ import { lookup_multiple } from "../api";
 
 const BoxTitle = ({ tab, changeTab, tabs }) => {
   return (
-    <div className="flex-none flex md:items-center flex-col items-right md:flex-row pb-4">
+    <div className="px-6 flex-none flex sm:items-center flex-col items-right sm:flex-row pb-4">
       <span className="inline-block flex-1 text-xl font-bold">
         My Favorites
       </span>
       <div className="flex">
-        <div className="flex gap-1 mt-2 md:mt-0">
+        <div className="flex gap-1 mt-2 sm:mt-0">
           {tabs.map((t, i) => (
             <div
               key={i}
@@ -42,7 +42,7 @@ const BoxContent = ({ data, dataType }) => {
   if (!data || data.length === 0) return <></>;
   switch (dataType) {
     case 0:
-      return <SongList songs={data} />;
+      return <SongList songs={data} showIndex={false} />;
     case 1:
       return <AlbumList data={data} />
     case 2:
@@ -88,7 +88,7 @@ export default function FavoriteBox() {
   console.log("render f box data", data);
 
   return (
-    <HomeBox className="w-full py-6 flex flex-col self-stretch ">
+    <HomeBox className="w-full py-6 px-0 flex flex-col self-stretch ">
       <BoxTitle tabs={tabs} tab={tab} changeTab={changeTab} />
       {idList.length === 0 ? (
         <div></div>
