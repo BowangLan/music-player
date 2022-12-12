@@ -1,7 +1,6 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
-/* @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap"); */
 @import url("//db.onlinewebfonts.com/c/05e476e067ffef74ca5686f229c40a63?family=PingFang+SC");
 
 
@@ -12,7 +11,7 @@
 }
 
 html,
-body {
+body, #__next {
   width: 100vw;
   height: 100vh;
 }
