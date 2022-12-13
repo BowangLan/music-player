@@ -28,9 +28,19 @@ const InputTypes = [
 
 const SearchResult = ({ resultType, data }) => {
   if (resultType === "album") {
-    return <AlbumList data={data} />;
+    return (
+      <div className="px-8">
+        <AlbumList data={data} />
+      </div>
+    );
   } else if (resultType === "song") {
-    return <SongList songs={data} showIndex={false} itemPadding="py-2 px-2 md:px-8" />;
+    return (
+      <SongList
+        songs={data}
+        showIndex={false}
+        itemPadding="py-2 px-2 md:px-8"
+      />
+    );
   }
 };
 
@@ -96,7 +106,7 @@ export default function Search() {
     limit: 25,
     offset: (page - 1) * 25,
   });
-  
+
   useEffect(() => {
     if (submitted) {
       setSubmitted(false);
@@ -139,8 +149,7 @@ export default function Search() {
                       <HiOutlineFilter size={22} className="text-slate-700" />
                     </IconContainer>
                     <div className="hidden absolute top-[120%]">
-                      <div className="-translate-x-[36%] bg-white shadow-md rounded-lg">
-                      </div>
+                      <div className="-translate-x-[36%] bg-white shadow-md rounded-lg"></div>
                     </div>
                   </div>
                 </div>

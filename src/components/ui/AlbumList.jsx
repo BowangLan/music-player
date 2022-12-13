@@ -34,7 +34,7 @@ export default function AlbumList({ data }) {
           whileHover="hover"
           key={`${i} ${item.collectionId}}`}
         >
-          <Link href={`/album/${item.collectionId}`} key={i}>
+          <Link href={`/album/${item.collectionId}`} >
             <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-slate-200 shadow-md group-hover:shadow-lg">
               <Image
                 src={item.imgSrcMd}
@@ -44,7 +44,7 @@ export default function AlbumList({ data }) {
               <div className="absolute inset-0 bg-slate-200 -z-10 animate-pulse"></div>
             </div>
           </Link>
-          <Link href={`/album/${item.collectionId}`} key={i}>
+          <Link href={`/album/${item.collectionId}`} >
             <div className="truncate text-md pt-2">
               {item.collectionName}
             </div>
