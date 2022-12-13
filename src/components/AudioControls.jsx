@@ -54,7 +54,8 @@ export const VolumeBar = ({ size = 32 }) => {
   const [currentVol, setCurrentVol] = useState(0);
   const [vOff, setVOff] = useState(false);
 
-  const handleVClick = () => {
+  const handleVClick = (e) => {
+    e.stopPropagation();
     if (!vOff) {
       audioRef.current.volume = 0;
       vRef.current.value = 0;
@@ -76,6 +77,7 @@ export const VolumeBar = ({ size = 32 }) => {
   }, [vRef.current, audioRef.current]);
 
   const handleChange = (e) => {
+    e.stopPropagation();
     console.log("Volume change", e.target.value);
     audioRef.current.volume = e.target.value;
     setCurrentVol(e.target.value);
@@ -92,22 +94,22 @@ export const VolumeBar = ({ size = 32 }) => {
           ))}
       </button> */}
       {/* <div className="w-0 group-hover:w-1/2 transition-all duration-300 overflow-hidden"> */}
-      <div className="w-full flex items-center transition-all duration-300 overflow-hidden">
-        <MdVolumeMute
+      <div className="w-full flex items-center transition-all duration-300 overflow-hidden gap-2">
+        {/* <MdVolumeMute
           size={size}
           className="flex-none"
           onClick={handleVClick}
-        />
+        /> */}
+        <MdVolumeUp size={size} className="flex-none" />
         <input
           ref={vRef}
           type="range"
-          className="flex-1"
+          className="min-w-[0] h-1 flex-1 bg-slate-400 appearance-none rounded-full"
           onChange={handleChange}
           min="0"
           max="1"
           step="0.01"
         />
-        <MdVolumeUp size={size} className="flex-none" />
       </div>
     </div>
   );

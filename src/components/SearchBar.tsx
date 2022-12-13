@@ -9,7 +9,6 @@ const SearchBar = () => {
   const [historyVisible, setHistoryVisible] = useState(false);
   const {
     list: history,
-    addUnique: addHistory,
     removeOne,
     removeAll: clearHistory,
     load: loadHistory,
@@ -25,12 +24,12 @@ const SearchBar = () => {
   }, [init]);
 
   return (
-    <div className="relative flex-1 flex items-center gap-4 h-12 rounded-full bg-white shadow-sm">
+    <div className="relative flex-1 flex items-center gap-4 h-9 w-full sm:w-72 sm:focus-within:w-96 rounded-full bg-slate-200 focus-within:bg-slate-300/60 shadow-sm transition-all duration-300">
       <Field
         id="searchText"
         name="searchText"
         placeholder="What do you want to hear?"
-        className="peer pl-6 pr-4 flex-1 outline-none"
+        className="peer pl-6 pr-4 flex-1 text-sm bg-transparent outline-none truncate"
         onFocus={() => {
           setHistoryVisible(true);
         }}

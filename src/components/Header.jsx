@@ -7,6 +7,9 @@ import IconContainer from "./icons/IconContainer";
 import { navItems } from "../constants";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import SearchBar from "./SearchBar";
+import { Form, Formik } from "formik";
+import { search } from "../api";
 
 const navItemUrls = navItems.map((m) => m.url);
 const isRootPath = (path) => navItemUrls.includes(path);
@@ -103,48 +106,67 @@ const MobileMenu = ({ close, isOpen }) => {
   );
 };
 
-export default function Header({ absolute }) {
-  const {
-    background,
-    title,
-    setBackgroundToDefault,
-    headerAbsolute,
-    setHeaderAbsolute,
-  } = useHeader();
+export const HeaderContainer = ({ children, className = "" }) => {
+  return (
+    <header
+      className={`w-full px-8 h-16 flex-none flex items-center z-10 ${className}`}
+    >
+      {children}
+    </header>
+  );
+};
+
+const SearchForm = () => {
+  return (
+    <Formik
+      initialValues={{
+        searchText: "",
+      }}
+      onSubmit={(values) => {
+        console.log("submit", values);
+        search({ keywords: values.searchText })
+          .then((res) => {
+            console.log("search response", res);
+          })
+          .catch((err) => console.error(err));
+      }}
+    >
+      {({ values }) => {
+        return (
+          <Form className="hidden sm:flex">
+            <SearchBar />
+          </Form>
+        );
+      }}
+    </Formik>
+  );
+};
+
+export default function Header() {
+  const { defaultHeaderClassName, title, showSearchBar } = useHeader();
   const router = useRouter();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  useEffect(() => {
-    if (isRootPath(router.pathname)) {
-      setBackgroundToDefault();
-    }
-
-    console.log("router.pathname", router.pathname);
-  }, [router.pathname]);
-
   return (
-    <header
-      className={`${
-        absolute ? "absolute top-0 left-0" : ""
-      } w-full px-8 h-16 flex-none flex items-center transition-all duration-300 ${background} z-20`}
-    >
+    <HeaderContainer className={`${defaultHeaderClassName}`}>
       {/* Left */}
-      <div className="flex items-center">
-        <div className={`mr-4 ${isRootPath(router.pathname) ? "hidden" : ""}`}>
+      <div className="flex items-center gap-4">
+        <div className={` ${isRootPath(router.pathname) ? "hidden" : ""}`}>
           <IconContainer onClick={() => router.back()}>
             <HiChevronLeft size={24} className="" />
           </IconContainer>
         </div>
-        <span className="inline-block lg:hidden text-xl font-semibold">
+        <span className="inline-block lg:hidden text-xl font-medium">
           {title}
         </span>
+        {/* {showSearchBar && <SearchForm />} */}
       </div>
 
-      {/* Right */}
+      {/* Middle */}
       <div className="flex-1"></div>
 
-      {/* Middle */}
+      {/* Right */}
       <div className="block lg:hidden">
         <IconContainer
           onClick={() => {
@@ -158,6 +180,6 @@ export default function Header({ absolute }) {
           close={() => setMobileMenuOpen(false)}
         />
       </div>
-    </header>
+    </HeaderContainer>
   );
 }

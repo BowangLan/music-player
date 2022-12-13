@@ -1,15 +1,19 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
+import { useRouter } from "next/router";
 import { AnimatePresence, motion } from "framer-motion";
 import { usePlayingSong } from "../../context/playingSong";
-import AudioControls from "../AudioControls";
+import AudioControls, { VolumeBar } from "../AudioControls";
 import Image from "next/image";
 import { SongLikeButton } from "../LikeButton";
 import IconContainer from "../icons/IconContainer";
 import { HiChevronDown, HiChevronUp } from "react-icons/hi";
+import { BiAlbum } from "react-icons/bi";
 import ArtistText from "./ArtistText";
 import { seconds_format } from "../../util";
 import MediaProgressInputWrapper from "../MediaProgressInputWrapper";
 import PlayModeBottom from "../PlayModeBottom";
+import { ArtistLink } from "./Link";
+import { InteractiveMiniProgressLine } from "../MiniProgressLine";
 
 const bottom_play_bar_transition = {
   duration: 0.3,
@@ -53,6 +57,65 @@ const MediaProgressBar = ({ className }) => {
   );
 };
 
+const PlayingSongSpinningImage = ({ className }) => {
+  const { playingSong, isPlaying } = usePlayingSong();
+
+  const ref = useRef();
+
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.style.animationPlayState = isPlaying ? "running" : "paused";
+    }
+  }, [isPlaying, ref]);
+  return (
+    <div
+      className={`relative flex-none rounded-full overflow-hidden animate-spin ${className}`}
+      ref={ref}
+      style={{
+        animationDuration: "18s",
+        animationName: "spinning",
+        animationIterationCount: "infinite",
+      }}
+    >
+      <Image
+        src={playingSong.artworkUrl100.replace("100x100", "270x270")}
+        alt={playingSong.trackName}
+        layout="fill"
+      />
+    </div>
+  );
+};
+
+const AlbumLink = ({ className = "", children }) => {
+  const { playingSong } = usePlayingSong();
+  const router = useRouter();
+  return (
+    <div
+      className={`flex items-center justify-center ${className}`}
+      onClick={(e) => {
+        e.stopPropagation();
+        router.push(`/album/${playingSong.collectionId}`);
+      }}
+    >
+      {children}
+    </div>
+  );
+};
+
+const TrackInfo = ({ song, className = "" }) => {
+  return (
+    <div className="w-full flex items-center gap-2">
+      <div className="min-w-[0] flex-1 flex flex-col gap-1">
+        <div className="text-white text-2xl font-medium line-clamp-2">
+          {song.trackName}
+        </div>
+        <ArtistText data={song} className="text-slate-300" />
+      </div>
+      <SongLikeButton size={28} song={song} className="text-white" />
+    </div>
+  );
+};
+
 const PlayerLayer = ({ visible, close }) => {
   const { playingSong, togglePlaying, isPlaying, audioRef, setPlayingSong } =
     usePlayingSong();
@@ -89,47 +152,34 @@ const PlayerLayer = ({ visible, close }) => {
             </div>
             {/* actual content */}
             <div className="absolute inset-0 flex flex-col items-center justify-center mt-8">
-              <div className="flex-1 px-8 md:px-0 w-full md:max-w-md lg:max-w-xl max-h-[75%] sm:max-h-[70%] flex flex-col items-center justify-between">
+              <div className="flex-1 px-8 md:px-0 w-full md:max-w-md lg:max-w-xl max-h-[75%] sm:max-h-[90%] flex flex-col items-center justify-center">
                 {/* Image */}
-                <div
-                  className="relative flex-none h-64 w-64 sm:h-80 sm:w-80 md:h-96 md:w-96 rounded-full overflow-hidden animate-spin [animation-duration:15s]"
-                  style={{
-                    animationDuration: "18s",
-                    animationPlayState: isPlaying ? "running" : "paused",
-                  }}
-                >
-                  <Image
-                    src={playingSong.artworkUrl100.replace(
-                      "100x100",
-                      "270x270"
-                    )}
-                    alt={playingSong.trackName}
-                    layout="fill"
-                  />
-                </div>
+                <PlayingSongSpinningImage
+                  className={`w-64 h-64 sm:h-80 sm:w-80 md:h-96 md:w-96`}
+                />
 
-                <div className="w-full sm:mt-8 flex flex-col gap-6 sm:gap-8">
+                <div className="flex-1 min-h-[0] max-h-[3rem]"></div>
+
+                <div className="w-full sm:mt-8 flex flex-col gap-6 sm:gap-6">
                   {/* Track name, artist, and like button */}
-                  <div className="w-full flex items-center gap-2">
-                    <div className="min-w-[0] flex-1 flex flex-col gap-1">
-                      <div className="text-white text-2xl font-medium line-clamp-2">
-                        {playingSong.trackName}
-                      </div>
-                      <ArtistText
-                        data={playingSong}
-                        className="text-slate-300"
-                      />
-                    </div>
-                    <SongLikeButton
-                      size={28}
-                      song={playingSong}
-                      className="text-white"
-                    />
-                  </div>
+                  <TrackInfo song={playingSong} />
 
                   {/* Audio controls */}
                   <MediaProgressBar className="" />
-                  <AudioControls size={48} className="text-white" />
+
+                  <div className="relative w-full flex items-center justify-center">
+                    <AudioControls size={48} className="text-white" />
+                    <div className="absolute left-0 top-0 bottom-0 flex items-center gap-2">
+                      <PlayModeBottom className="text-white -translate-x-2" />
+                    </div>
+                    <div className="absolute right-0 top-0 bottom-0 flex items-center gap-2">
+                      <IconContainer>
+                        <AlbumLink>
+                          <BiAlbum size={24} className="text-white" />
+                        </AlbumLink>
+                      </IconContainer>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -147,7 +197,7 @@ const BottomPlayBarComponent = ({ visible, setPlayerVisible }) => {
     <AnimatePresence>
       {visible && (
         <motion.div
-          className="fixed left-0 right-0 bottom-0 h-20 px-6 bg-blue-100/50 backdrop-blur-2xl flex items-center"
+          className="fixed left-0 right-0 bottom-0 h-20 bg-blue-100/50 backdrop-blur-2xl flex items-center"
           variants={bottom_play_bar_variants}
           initial="hidden"
           animate="show"
@@ -161,13 +211,13 @@ const BottomPlayBarComponent = ({ visible, setPlayerVisible }) => {
         >
           <div
             className="relative w-full h-full flex justify-center items-center"
-            onClick={() => setPlayerVisible(true)}
+            // onClick={() => setPlayerVisible(true)}
           >
             {/* Middle */}
             <AudioControls size={38} className="" />
 
             {/* Left */}
-            <div className="absolute left-0 top-0 bottom-0 w-1/3 lg:w-1/4 max-w-[18rem] overflow-hidden flex items-center gap-3">
+            <div className="absolute left-6 top-0 bottom-0 w-1/3 lg:w-1/4 max-w-[18rem] overflow-hidden flex items-center gap-3">
               {playingSong && (
                 <>
                   <div
@@ -180,24 +230,18 @@ const BottomPlayBarComponent = ({ visible, setPlayerVisible }) => {
                         className="text-transparent group-hover:text-slate-200"
                       />
                     </div>
-                    <Image
-                      src={playingSong.imgSrcMd}
-                      alt={playingSong.trackName}
-                      layout="fill"
-                      className="animate-spin rounded-full"
-                      style={{
-                        animationDuration: "18s",
-                        animationPlayState: isPlaying ? "running" : "paused",
-                      }}
-                    />
+                    <PlayingSongSpinningImage className="h-12 w-12" />
                   </div>
                   <div className="min-w-[0] flex-1 hidden sm:flex flex-col justify-between">
                     <div className="w-full line-clamp-1 cursor-pointer">
                       {playingSong.trackName}
                     </div>
-                    <div className="w-full line-clamp-1 text-sm text-slate-500">
+                    <ArtistLink
+                      artist={playingSong}
+                      className="w-full line-clamp-1 text-sm text-slate-500"
+                    >
                       {playingSong.artistName}
-                    </div>
+                    </ArtistLink>
                   </div>
                   <div className="hidden sm:block">
                     <SongLikeButton size={24} song={playingSong} />
@@ -207,9 +251,12 @@ const BottomPlayBarComponent = ({ visible, setPlayerVisible }) => {
             </div>
 
             {/* Right */}
-            <div className="absolute right-0 top-0 bottom-0 overflow-hidden flex items-center gap-3">
+            <div className="absolute right-6 top-0 bottom-0 overflow-hidden flex items-center gap-4">
+              <VolumeBar size={28} />
               <PlayModeBottom />
             </div>
+
+            <InteractiveMiniProgressLine className="bg-gradient-to-r from-blue-500/70 to-blue-500 hover:from-purple-500/70 hover:to-red-500/70" />
           </div>
         </motion.div>
       )}

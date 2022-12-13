@@ -30,7 +30,7 @@ const SearchResult = ({ resultType, data }) => {
   if (resultType === "album") {
     return <AlbumList data={data} />;
   } else if (resultType === "song") {
-    return <SongList songs={data} showIndex={false} />;
+    return <SongList songs={data} showIndex={false} itemPadding="py-2 px-2 md:px-8" />;
   }
 };
 
@@ -96,13 +96,7 @@ export default function Search() {
     limit: 25,
     offset: (page - 1) * 25,
   });
-
-  // const searchMutation = useMutation(search_itunes, {
-  //   onSuccess: (data) => {
-
-  //   }
-  // })
-
+  
   useEffect(() => {
     if (submitted) {
       setSubmitted(false);
@@ -117,7 +111,7 @@ export default function Search() {
 
   return (
     <Layout>
-      <div className="flex flex-col py-6 px-6 lg:px-8">
+      <div className="flex flex-col py-6 px-6 lg:px-0">
         {/* display any error messages as dismissible alerts */}
         {/* <div className="h-16"></div> */}
 
@@ -136,14 +130,18 @@ export default function Search() {
           }}
         >
           {({ value }) => (
-            <Form className="flex flex-col lg:items-stretch gap-4">
+            <Form className="px-8 flex flex-col lg:items-stretch gap-4">
               <div className="w-full flex justify-center items-center">
                 <div className="w-full flex gap-2 items-center md:max-w-lg">
                   <SearchBar />
-                  <div className="w-11 h-11">
+                  <div className="relative w-11 h-11">
                     <IconContainer size="full">
                       <HiOutlineFilter size={22} className="text-slate-700" />
                     </IconContainer>
+                    <div className="hidden absolute top-[120%]">
+                      <div className="-translate-x-[36%] bg-white shadow-md rounded-lg">
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -17,6 +17,14 @@ export default function AlbumPage() {
   const [alData, setAlData] = useState();
   const { setQueue, playQueue } = usePlayingSong();
 
+
+  const { setDefaultHeaderClassName, setTitle, setShowSearchBar } = useHeader();
+
+  useEffect(() => {
+    setDefaultHeaderClassName("bg-white absolute");
+    setShowSearchBar(false);
+  }, [])
+
   // const { setBackground } = useHeader();
 
   const { data, error } = useQuery([id], () => get_album(id), {
@@ -36,7 +44,7 @@ export default function AlbumPage() {
       console.log("got data", data);
       setSongs(() => process_itunes_tracks(data.results.slice(1)));
       setAlData(() => process_itunes_album_result([data.results[0]])[0]);
-      // setBackground("bg-transparent");
+      setTitle(data.results[0].collectionName);
     }
   }, [data]);
 
@@ -51,7 +59,7 @@ export default function AlbumPage() {
       {/* <div className="d-flex flex-wrap">{trackElemArray}</div> */}
       <div className="pb-2 py-3">
         {songs && (
-          <SongList songs={songs} className="" showCollection={false} />
+          <SongList songs={songs} className="" showCollection={false} itemPadding="py-3 px-6 sm:px-8" />
         )}
       </div>
     </Layout>

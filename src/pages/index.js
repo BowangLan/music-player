@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import PlayBox from "../components/PlayBox";
 import FavoriteBox from "../components/FavoriteBox";
 import Layout from "../components/Layout";
+import { useHeader } from "../store";
 
 
 export default function Home() {

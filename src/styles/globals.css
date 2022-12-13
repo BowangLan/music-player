@@ -16,16 +16,12 @@ body, #__next {
   height: 100vh;
 }
 
-input[type='range'],
-input[type='range']::-webkit-slider-runnable-track,
-input[type='range']::-webkit-slider-thumb {
-  -webkit-appearance: none;
-}
 
-input[type='range']::-webkit-slider-thumb {
-  height: 1.2rem;
-  width: 1.2rem;
-  margin-top: 0.2rem;
-  background: white;
-  border-radius: 50%;
+@keyframes spinning {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  } 
 }

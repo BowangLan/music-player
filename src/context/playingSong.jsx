@@ -120,6 +120,7 @@ export const PlayingSongWrapper = ({ children }) => {
       console.log("play mode", playMode);
       if (playMode === 1) {
         audioRef.current.play();
+        setIsPlaying(true);
       } else {
         setIsPlaying(false);
         nextSong();

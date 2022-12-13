@@ -9,7 +9,7 @@ import ArtistText from "./ArtistText";
 const IndexOrPlayButton = ({ i, isPlaying }) => {
   return (
     <div
-      className={"flex-none w-16 text-center flex justify-center items-center"}
+      className={"flex-none w-8 text-center flex items-center"}
     >
       {isPlaying ? (
         <PlayButton size={32} />
@@ -24,7 +24,7 @@ const SongImage = ({ song: s }) => {
   return (
     <div
       className={
-        "relative h-12 w-12 hidden md:block mr-4 rounded-lg overflow-hidden"
+        "relative h-11 w-11 hidden md:block mr-2 rounded-lg overflow-hidden"
       }
     >
       <Image src={s.imgSrcSm} alt={s.imgAlt} layout="fill" />
@@ -45,7 +45,7 @@ const TracknameText = ({ song: s, onClick }) => {
 
 const DurationText = ({ song: s }) => {
   return (
-    <div className="w-16 text-right">
+    <div className="w-16 text-right text-sm">
       {milliseconds_to_ms(s.trackTimeMillis)}
     </div>
   );
@@ -58,14 +58,15 @@ const SongItem = ({
   handleSongNameClick,
   showIndex = true,
   showCollection = true,
+  padding = "py-2 px-2",
 }) => {
   return (
-    <SongContainer isPlaying={isPlaying} i={i} p="py-2 px-2">
+    <SongContainer isPlaying={isPlaying} i={i} p={padding}>
       {/* song index / play bottom */}
       {showIndex ? (
         <IndexOrPlayButton i={i} isPlaying={isPlaying} />
       ) : (
-        <div className="w-4 md:w-6"></div>
+        <div className="w-0 md:w-0"></div>
       )}
 
       {/* song image */}
@@ -92,7 +93,7 @@ const SongItem = ({
       )}
 
       {/* song duration */}
-      <div className="block flex-none justify-self-end mr-6 gap-8">
+      <div className="block flex-none justify-self-end gap-8">
         {/* <span className="hidden lg:block md:w-12 flex-none text-slate-500 ">${s.trackPrice}</span> */}
         <DurationText song={s} />
       </div>
@@ -105,6 +106,7 @@ export default function SongList({
   className = "",
   showIndex,
   showCollection,
+  itemPadding,
 }) {
   const {
     playingSong,
@@ -137,6 +139,7 @@ export default function SongList({
           handleSongNameClick={handleSongNameClick}
           showIndex={showIndex}
           showCollection={showCollection}
+          padding={itemPadding}
         />
       ))}
     </div>

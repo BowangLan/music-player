@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import MiniProgressLine from "../MiniProgressLine";
+import { BottomMiniProgressLine } from "../MiniProgressLine";
 
 export default function SongContainer({ isPlaying, i, p, children }) {
   return (
@@ -23,7 +23,7 @@ export default function SongContainer({ isPlaying, i, p, children }) {
       }`}
     >
       {/* bottom progress line */}
-      {isPlaying && <MiniProgressLine />}
+      {isPlaying && <BottomMiniProgressLine className="bg-gradient-to-r from-blue-500/70 to-blue-500 group-hover:from-purple-500/70 group-hover:to-red-500/70" />}
 
       {/* left border */}
       <div

@@ -79,21 +79,29 @@ export const useFArtists = listStoreFactory(FARTIST_KEY);
 export const useSearchHistory = listStoreFactory(SEARCH_HISTORY_KEY);
 
 export const useHeader = create((set, get) => ({
-  title: "JT Music Player",
-  background: "bg-white",
-  headerAbsolute: "",
+  title: "Music Player",
+  defaultHeaderClassName: "bg-white",
+  showSearchBar: true,
+  customHeader: false,
 
   setTitle: (t) => {
     set({ title: t });
   },
 
-  setBackground: (bg) => {
-    console.log("zustand set background", bg);
-    set({ background: bg });
+  useCustomHeader: () => {
+    set({ customHeader: true });
   },
 
-  setBackgroundToDefault: () => {
-    set({ background: "bg-white" });
+  setDefaultHeaderClassName: (c) => {
+    set({ defaultHeaderClassName: c });
+  },
+
+  setShowSearchBar: (b) => {
+    set({ showSearchBar: b });
+  },
+
+  setHeaderToDefault: () => {
+    set({ defaultHeaderClassName: "static bg-white", title: "Music Player", showSearchBar: true });
   },
 
   setHeaderAbsolute: (isAbs) => {

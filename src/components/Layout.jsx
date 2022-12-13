@@ -1,14 +1,28 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Sidebar from "./SideBar";
 import Header from "./Header";
 import BottomPlayBar from "./ui/BottomPlayBar";
+import { useRouter } from "next/router";
+import { useHeader } from "../store";
 
 export default function Layout({ children, absolute }) {
+  const router = useRouter();
+  const { setHeaderToDefault, customHeader } = useHeader();
+  useEffect(() => {
+    router.events.on('routeChangeStart', () => {
+      setHeaderToDefault();
+    })
+    setHeaderToDefault();
+  }, [])
   return (
     <div className="flex items-stretch w-full min-w-screen max-w-screen h-full max-h-screen bg-slate-100 overflow-hidden">
       <Sidebar />
       <div className="relative min-w-[0] flex-1 max-w-screen h-full max-h-screen flex flex-col">
-        <Header absolute={absolute} />
+        {customHeader ? (
+          <div>{customHeader}</div>
+        ) : (
+          <Header />
+        )}
         <main className="w-full min-h-[0] flex-1 p-0 overflow-y-scroll scrollbar-hide">
           {children}
           <div className="h-20"></div>

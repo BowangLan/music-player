@@ -71,3 +71,9 @@ export const get_artist_songs = (id, limit, offset, entity = "music") => {
 export const get_artist_albums = (id, limit, offset, entity = "music") => {
   return itunes_lookup({ id, limit, offset, entity });
 };
+
+export const search = (params) => {
+  return fetch_json(
+    `http://${process.env.NEXT_PUBLIC_SERVER_HOST}/search?${contruct_url_query(params)}`
+  );
+};
