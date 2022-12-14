@@ -27,10 +27,10 @@ function MyApp({ Component, pageProps }) {
         }}
       >
         <GlobalContextWrapper>
-          {/* <Layout>
-          <Component {...pageProps} />
-        </Layout> */}
-          <Component {...pageProps} />
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+          {/* <Component {...pageProps} /> */}
         </GlobalContextWrapper>
       </SWRConfig>
     </QueryClientProvider>

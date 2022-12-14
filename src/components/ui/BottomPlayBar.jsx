@@ -44,7 +44,7 @@ const MediaProgressBar = ({ className }) => {
               defaultValue="0"
               step="0.1"
               onChange={changeRangeInput}
-              className={`w-full appearance-none h-2 bg-slate-300 rounded-full ${className}`}
+              className={`w-full appearance-none h-1 bg-slate-300 rounded-full ${className}`}
             />
             <div className="mt-4 flex justify-between text-slate-300">
               <span className="">{seconds_format(currentProgress)}</span>
@@ -158,7 +158,7 @@ const PlayerLayer = ({ visible, close }) => {
                   className={`w-64 h-64 sm:h-80 sm:w-80 md:h-96 md:w-96`}
                 />
 
-                <div className="flex-1 min-h-[0] max-h-[3rem]"></div>
+                <div className="flex-1 min-h-[1.5rem] max-h-[3rem]"></div>
 
                 <div className="w-full sm:mt-8 flex flex-col gap-6 sm:gap-6">
                   {/* Track name, artist, and like button */}
@@ -169,10 +169,10 @@ const PlayerLayer = ({ visible, close }) => {
 
                   <div className="relative w-full flex items-center justify-center">
                     <AudioControls size={48} className="text-white" />
-                    <div className="absolute left-0 top-0 bottom-0 flex items-center gap-2">
-                      <PlayModeBottom className="text-white -translate-x-2" />
+                    <div className="absolute -left-2 top-0 bottom-0 flex items-center gap-2">
+                      <PlayModeBottom className="text-white" />
                     </div>
-                    <div className="absolute right-0 top-0 bottom-0 flex items-center gap-2">
+                    <div className="absolute -right-2 top-0 bottom-0 flex items-center gap-2">
                       <IconContainer>
                         <AlbumLink>
                           <BiAlbum size={24} className="text-white" />
@@ -197,13 +197,12 @@ const BottomPlayBarComponent = ({ visible, setPlayerVisible }) => {
     <AnimatePresence>
       {visible && (
         <motion.div
-          className="fixed left-0 right-0 bottom-0 h-20 bg-blue-100/50 backdrop-blur-2xl flex items-center"
+          className="fixed left-0 right-0 bottom-0 h-16 sm:h-20 bg-blue-100/70 backdrop-blur-2xl flex items-center"
           variants={bottom_play_bar_variants}
           initial="hidden"
           animate="show"
           exit="hidden"
           onPanEnd={(e, info) => {
-            // console.log('pan end', info);
             if (info.offset.y < 5 && Math.abs(info.offset.x) < 20) {
               setPlayerVisible(true);
             }
@@ -211,7 +210,6 @@ const BottomPlayBarComponent = ({ visible, setPlayerVisible }) => {
         >
           <div
             className="relative w-full h-full flex justify-center items-center"
-            // onClick={() => setPlayerVisible(true)}
           >
             {/* Middle */}
             <AudioControls size={38} className="" />
@@ -221,7 +219,7 @@ const BottomPlayBarComponent = ({ visible, setPlayerVisible }) => {
               {playingSong && (
                 <>
                   <div
-                    className="group relative flex-none h-12 w-12 overflow-hidden cursor-pointer"
+                    className="group relative flex-none h-10 w-10 sm:h-12 sm:w-12 overflow-hidden cursor-pointer"
                     onClick={() => setPlayerVisible(true)}
                   >
                     <div className="absolute group-hover:bg-black/30 inset-0 rounded-full flex items-center justify-center bg-transparent z-20">
@@ -230,7 +228,7 @@ const BottomPlayBarComponent = ({ visible, setPlayerVisible }) => {
                         className="text-transparent group-hover:text-slate-200"
                       />
                     </div>
-                    <PlayingSongSpinningImage className="h-12 w-12" />
+                    <PlayingSongSpinningImage className="h-10 sm:h-12 w-10 sm:w-12" />
                   </div>
                   <div className="min-w-[0] flex-1 hidden sm:flex flex-col justify-between">
                     <div className="w-full line-clamp-1 cursor-pointer">
@@ -252,11 +250,13 @@ const BottomPlayBarComponent = ({ visible, setPlayerVisible }) => {
 
             {/* Right */}
             <div className="absolute right-6 top-0 bottom-0 overflow-hidden flex items-center gap-4">
-              <VolumeBar size={28} />
+              <div className="hidden md:flex flex-1">
+                <VolumeBar size={28} />
+              </div>
               <PlayModeBottom />
             </div>
 
-            <InteractiveMiniProgressLine className="bg-gradient-to-r from-blue-500/70 to-blue-500 hover:from-purple-500/70 hover:to-red-500/70" />
+            <InteractiveMiniProgressLine className="" />
           </div>
         </motion.div>
       )}

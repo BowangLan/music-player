@@ -45,19 +45,24 @@ const mobile_menu_overlay = {
   },
 };
 
-const NavItem = ({ item, i }) => {
+const NavItem = ({ item, i, close }) => {
   const router = useRouter();
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    close();
+    router.push(item.url);
+  };
   return (
     <li className="w-full relative group">
-      <Link key={i} href={item.url} passHref>
-        <a
-          className={`w-full h-12 flex items-center px-4 rounded-lg group-hover:bg-blue-300 transition-all duration-300 ${
-            router.pathname === item.url ? `bg-blue-200` : "bg-slate-100"
-          }`}
-        >
-          {item.text}
-        </a>
-      </Link>
+      <a
+        onClick={handleClick}
+        className={`w-full h-12 flex items-center px-4 rounded-lg group-hover:bg-blue-300 transition-all duration-300 ${
+          router.pathname === item.url ? `bg-blue-200` : "bg-slate-100"
+        }`}
+      >
+        {item.text}
+      </a>
       {router.pathname === item.url && (
         <div
           className={`absolute -right-6 top-0 bottom-0 w-1.5 rounded-lg bg-blue-300 group-hover:bg-blue-400 transition-all duration-300`}
@@ -95,7 +100,7 @@ const MobileMenu = ({ close, isOpen }) => {
               </div>
               <ul className="py-6 flex flex-col gap-4">
                 {navItems.map((item, i) => (
-                  <NavItem key={i} item={item} i={i} />
+                  <NavItem key={i} item={item} i={i} close={close} />
                 ))}
               </ul>
             </div>
@@ -109,7 +114,7 @@ const MobileMenu = ({ close, isOpen }) => {
 export const HeaderContainer = ({ children, className = "" }) => {
   return (
     <header
-      className={`w-full px-8 h-16 flex-none flex items-center z-10 ${className}`}
+      className={`w-full px-8 h-16 flex-none flex items-center z-20 ${className}`}
     >
       {children}
     </header>
@@ -151,13 +156,13 @@ export default function Header() {
   return (
     <HeaderContainer className={`${defaultHeaderClassName}`}>
       {/* Left */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4">
         <div className={` ${isRootPath(router.pathname) ? "hidden" : ""}`}>
           <IconContainer onClick={() => router.back()}>
             <HiChevronLeft size={24} className="" />
           </IconContainer>
         </div>
-        <span className="inline-block lg:hidden text-xl font-medium">
+        <span className="inline-block lg:hidden text-xl font-medium line-clamp-1">
           {title}
         </span>
         {/* {showSearchBar && <SearchForm />} */}

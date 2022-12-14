@@ -103,6 +103,11 @@ export default function MediaProgressInputWrapper({ children }) {
     updateProgressBar();
   };
 
+  const updateAudioProgress = (percentage) => {
+    audioRef.current.currentTime = percentage * duration;
+    updateProgressBar(); 
+  }
+
   const durationStr = !isNaN(duration) && seconds_format(duration);
 
   return children({
@@ -111,5 +116,6 @@ export default function MediaProgressInputWrapper({ children }) {
     duration,
     ref: pRef,
     changeRangeInput,
+    updateAudioProgress
   });
 };

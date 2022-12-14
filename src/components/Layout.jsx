@@ -4,15 +4,26 @@ import Header from "./Header";
 import BottomPlayBar from "./ui/BottomPlayBar";
 import { useRouter } from "next/router";
 import { useHeader } from "../store";
+import { navItems } from "../constants";
 
-export default function Layout({ children, absolute }) {
+const navItemUrls = navItems.map((m) => m.url);
+
+export default function Layout({ children }) {
   const router = useRouter();
   const { setHeaderToDefault, customHeader } = useHeader();
   useEffect(() => {
-    router.events.on('routeChangeStart', () => {
-      setHeaderToDefault();
-    })
+    const handleRouteChangeComplete = () => {
+      console.log('routeChangeComplete', window.location.href.pathname);
+      if (navItemUrls.includes(window.location.pathname)) {
+        console.log('set header to default');
+        setHeaderToDefault();
+      }
+    }
+    router.events.on('routeChangeComplete', handleRouteChangeComplete);
     setHeaderToDefault();
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChangeComplete);
+    }
   }, [])
   return (
     <div className="flex items-stretch w-full min-w-screen max-w-screen h-full max-h-screen bg-slate-100 overflow-hidden">

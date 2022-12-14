@@ -18,20 +18,22 @@ const stopPropagationWrapper = (fn) => {
   };
 };
 
-export const PlayButton = ({ size = 44 }) => {
+export const PlayButton = ({ size = 44, className = "" }) => {
   const { isPlaying, togglePlaying, isLoading } = usePlayingSong();
   if (isLoading) {
-    return <ImSpinner2 size={size} className="animate-spin" />;
+    return <ImSpinner2 size={size-2} className={`animate-spin`} />;
   }
   return isPlaying ? (
     <MdOutlinePauseCircleFilled
       size={size}
       onClick={stopPropagationWrapper(togglePlaying)}
+      className={className}
     />
   ) : (
     <MdOutlinePlayCircleFilled
       size={size}
       onClick={stopPropagationWrapper(togglePlaying)}
+      className={className}
     />
   );
 };

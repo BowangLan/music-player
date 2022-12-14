@@ -12,7 +12,9 @@ const IndexOrPlayButton = ({ i, isPlaying }) => {
       className={"flex-none w-8 text-center flex items-center"}
     >
       {isPlaying ? (
+        <div className="-translate-x-3">
         <PlayButton size={32} />
+        </div>
       ) : (
         <span className={"text-slate-400"}>{i + 1}</span>
       )}

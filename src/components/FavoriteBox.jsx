@@ -42,9 +42,9 @@ const BoxContent = ({ data, dataType }) => {
   if (!data || data.length === 0) return <></>;
   switch (dataType) {
     case 0:
-      return <SongList songs={data} showIndex={false} itemPadding="py-2 px-4 sm:px-6" />;
+      return <SongList songs={data} showIndex={false} itemPadding="py-2 px-6" />;
     case 1:
-      return <AlbumList data={data} />
+      return <div className="px-6"><AlbumList data={data} /></div> 
     case 2:
       return <ArtistList data={data} />
   }

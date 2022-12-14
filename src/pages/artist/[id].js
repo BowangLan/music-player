@@ -37,7 +37,7 @@ export default function ArtistPage() {
   }, [artistData]);
 
   return (
-    <Layout>
+    <>
       {error ? (
         <div>An error has occurred</div>
       ) : artistData ? (
@@ -45,6 +45,6 @@ export default function ArtistPage() {
       ) : (
         <div className="flex justify-center mt-40">Loading...</div>
       )}
-    </Layout>
+    </>
   );
 }

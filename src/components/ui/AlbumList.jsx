@@ -23,7 +23,7 @@ const coverVariants = {
 
 export default function AlbumList({ data }) {
   return (
-    <div className="pb-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-x-8 gap-y-8">
+    <div className="pb-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-x-8 gap-y-6">
       {data.map((item, i) => (
         <motion.div
           className="cursor-pointer group"

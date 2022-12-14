@@ -24,7 +24,7 @@ const SearchBar = () => {
   }, [init]);
 
   return (
-    <div className="relative flex-1 flex items-center gap-4 h-9 w-full sm:w-72 sm:focus-within:w-96 rounded-full bg-slate-200 focus-within:bg-slate-300/60 shadow-sm transition-all duration-300">
+    <div className="relative flex-1 flex items-center gap-4 h-10 w-full sm:w-72 sm:focus-within:w-96 rounded-full bg-slate-300/80 focus-within:bg-slate-300/60 shadow-sm transition-all duration-300">
       <Field
         id="searchText"
         name="searchText"

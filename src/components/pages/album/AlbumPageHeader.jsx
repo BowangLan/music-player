@@ -39,7 +39,7 @@ const AlbumCoverBackground = ({ src }) => {
           <Image src={src} alt="Album Cover Layer" layout="fill" />
         </div>
       </div>
-      <div className="absolute inset-0 backdrop-blur-2xl z-0 "></div>
+      <div className="absolute inset-0 backdrop-blur-2xl z-0"></div>
     </>
   );
 };
@@ -48,7 +48,7 @@ const AlbumPageHeader = ({ album, playAlbum }) => {
   const imgSrc = album.artworkUrl100.replace("100x100", "270x270");
   return (
     <div className={`w-full pt-20 pb-4 relative`}>
-      <div className="px-6 sm:px-8 py-4 w-full h-full flex flex-col gap-6 bg-transparent z-10">
+      <div className="px-6 sm:px-8 py-4 w-full h-full flex flex-col gap-6 bg-transparent">
         <div className="w-full h-full flex gap-6">
           {/* Album image */}
           <AlbumCoverImage src={imgSrc} alt={album.collectionName} />
@@ -56,7 +56,7 @@ const AlbumPageHeader = ({ album, playAlbum }) => {
           {/* Album info */}
           <div className="z-10 flex-1 self-stretch flex flex-col justify-between sm:gap-1">
             {/* Upper content */}
-            <div className="sm:text-lg md:text-2xl font-medium line-clamp-2">
+            <div className="sm:text-lg md:text-2xl font-medium line-clamp-1 sm:line-clamp-2">
               {album.collectionName}
             </div>
             <div className="flex mb-1">
