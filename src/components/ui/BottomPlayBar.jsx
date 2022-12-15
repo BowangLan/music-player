@@ -158,7 +158,7 @@ const PlayerLayer = ({ visible, close }) => {
                   className={`w-64 h-64 sm:h-80 sm:w-80 md:h-96 md:w-96`}
                 />
 
-                <div className="flex-1 min-h-[1.5rem] max-h-[3rem]"></div>
+                <div className="flex-1 min-h-[1rem] max-h-[3rem]"></div>
 
                 <div className="w-full sm:mt-8 flex flex-col gap-6 sm:gap-6">
                   {/* Track name, artist, and like button */}

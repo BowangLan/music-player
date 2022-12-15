@@ -10,7 +10,6 @@ import { process_api_data } from "../util";
 import { useQuery } from "react-query";
 import { lookup_multiple } from "../api";
 
-
 const BoxTitle = ({ tab, changeTab, tabs }) => {
   return (
     <div className="px-6 flex-none flex sm:items-center flex-col items-right sm:flex-row pb-4">
@@ -26,7 +25,7 @@ const BoxTitle = ({ tab, changeTab, tabs }) => {
                 "px-5 text-center py-1.5 " +
                 (tab === i ? "bg-slate-200" : "") +
                 " cursor-pointer hover:bg-blue-200 rounded-lg transition-all duration-300"
-             }
+              }
               onClick={() => changeTab(i)}
             >
               {t.label}
@@ -42,12 +41,36 @@ const BoxContent = ({ data, dataType }) => {
   if (!data || data.length === 0) return <></>;
   switch (dataType) {
     case 0:
-      return <SongList songs={data} showIndex={false} itemPadding="py-2 px-6" />;
+      return (
+        <SongList songs={data} showIndex={false} itemPadding="py-2 px-6" />
+      );
     case 1:
-      return <div className="px-6"><AlbumList data={data} /></div> 
+      return (
+        <div className="px-6">
+          <AlbumList data={data} />
+        </div>
+      );
     case 2:
-      return <ArtistList data={data} />
+      return <ArtistList data={data} />;
   }
+};
+
+const FavoriteSongList = () => {
+  const { list: idList, load } = useFSongs();
+  const { data, error } = useQuery(idList, () => lookup_multiple(idList), {
+    enabled: idList.length > 0,
+  });
+  const [init, setInit] = useState(true);
+
+  useEffect(() => {
+    if (init) {
+      setInit(false);
+      load();
+      // getTabData(tab);
+    }
+  }, [init]);
+
+  return <SongList songs={data} showIndex={false} itemPadding="py-2 px-6" />;
 };
 
 const tabHookList = [useFSongs, useFAlbums, useFArtists];
@@ -66,19 +89,21 @@ export default function FavoriteBox() {
   // const { data, error } = useLookUp(idList);
   const { data, error } = useQuery(idList, () => lookup_multiple(idList), {
     enabled: idList.length > 0,
-  })
+  });
 
   useEffect(() => {
     if (init) {
       setInit(false);
       load();
-      // getTabData(tab);
     }
   }, [init]);
 
+  useEffect(() => {
+    load();
+  }, [tab]);
+
   const changeTab = (i) => {
     setTab(i);
-    // getTabData(i);
   };
 
   useEffect(() => {
@@ -88,14 +113,16 @@ export default function FavoriteBox() {
   console.log("render f box data", data);
 
   return (
-    <HomeBox className="w-full py-6 px-0 flex flex-col self-stretch ">
+    <HomeBox className="w-full max-h-[20rem] py-4 px-0 flex flex-col self-stretch ">
       <BoxTitle tabs={tabs} tab={tab} changeTab={changeTab} />
       {idList.length === 0 ? (
         <div></div>
       ) : error ? (
         <div>{error}</div>
       ) : data ? (
-        <BoxContent data={process_api_data(data.results)} dataType={tab} />
+        <div className="min-w-[0] flex-1 overflow-y-scroll">
+          <BoxContent data={process_api_data(data.results)} dataType={tab} />
+        </div>
       ) : (
         <div className="w-full h-1/3 flex justify-center items-center">
           <Spinner size={38} />

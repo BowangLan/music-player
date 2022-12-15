@@ -20,7 +20,7 @@ const AlbumCoverImage = ({ src, alt }) => {
     <div className="relative w-28 h-28 sm:w-44 sm:h-44 md:w-52 md:h-52 z-10">
       <Image
         src={src}
-        alt="Album Cover"
+        alt={alt}
         layout="fill"
         className="rounded-3xl cover-image"
       />

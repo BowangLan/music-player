@@ -1,52 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { usePlayingSong } from "../context/playingSong";
-import { SongLikeButton } from "./LikeButton";
-import AudioControls from "./AudioControls";
-import Image from "next/image";
 import { navItems } from "../constants";
-
-const SideBarPlayer = () => {
-  const { playingSong } = usePlayingSong();
-
-  if (!playingSong) {
-    return <></>;
-  }
-
-  return (
-    <div className="flex-none py-8 flex flex-col gap-4">
-      <Link href="/">
-        <div className="w-full aspect-square relative rounded-lg overflow-hidden">
-          <Image
-            src={playingSong.imgSrcMd}
-            alt="Playing song cover image"
-            layout="fill"
-          />
-        </div>
-      </Link>
-      <div className="h-12 flex items-center">
-        {/* Title left */}
-        <div className="flex flex-col flex-1 overflow-hidden">
-          <div className="line-clamp-1 font-bold">{playingSong.trackName}</div>
-          <a
-            href={playingSong.artistViewUrl}
-            target="_blank"
-            className="inline-block text-slate-500 text-base truncate"
-            rel="noreferrer"
-          >
-            {playingSong.artistName}
-          </a>
-        </div>
-        {/* Title right */}
-        <div className="flex-none flex justify-center items-center ml-2">
-          <SongLikeButton song={playingSong} size={28} />
-        </div>
-      </div>
-      <AudioControls size={38} className="" />
-    </div>
-  );
-};
 
 const NavItem = ({ item, i }) => {
   const router = useRouter();

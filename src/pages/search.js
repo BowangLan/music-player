@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import AlbumList from "../components/ui/AlbumList";
 import { search_itunes } from "../api";
 import SearchBar from "../components/SearchBar";
@@ -12,6 +12,7 @@ import { HiOutlineFilter } from "react-icons/hi";
 import IconContainer from "../components/icons/IconContainer";
 import { useMutation } from "react-query";
 import { useSearchHistory } from "../store";
+import useVisible from "../hooks/useVisible";
 
 const ResultTypes = [
   { value: "album", label: "Album" },
@@ -84,6 +85,9 @@ export default function Search() {
   );
   const [submitted, setSubmitted] = useState(false);
 
+  const tailItemRef = useRef();
+  const tailItemObserverEntry = useVisible(tailItemRef, {});
+
   const {
     list: history,
     getOne: getOneSearchHistory,
@@ -116,6 +120,10 @@ export default function Search() {
   useEffect(() => {
     setSubmitted(true);
   }, [submittedValues]);
+
+  useEffect(() => {
+    console.log("tail visible");
+  }, [tailItemObserverEntry?.isIntersecting]);
 
   console.log("render search page", { searchResult });
 
@@ -178,10 +186,13 @@ export default function Search() {
             <span className="text-lg">An error occurred</span>
           </div>
         ) : data ? (
-          <SearchResult
-            data={process_api_data(data.results)}
-            resultType={submittedValues?.resultType}
-          />
+          <div>
+            <SearchResult
+              data={process_api_data(data.results)}
+              resultType={submittedValues?.resultType}
+            />
+            <div className="" ref={tailItemRef}></div>
+          </div>
         ) : (
           <div className="w-full pt-24 flex justify-center items-center">
             <Spinner size={44} />
