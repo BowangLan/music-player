@@ -25,3 +25,8 @@ body, #__next {
     transform: rotate(360deg);
   } 
 }
+
+
+.albumpage-songitem {
+  padding: 12px 20px;
+}

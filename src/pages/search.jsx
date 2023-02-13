@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
-import AlbumList from "../components/ui/AlbumList";
+import * as AlbumList from "../components/ui/AlbumList";
 import { search_itunes } from "../api";
 import SearchBar from "../components/SearchBar";
 import useLocalStorageState from "../hooks/useLocalStorageState";
 import { process_api_data } from "../util";
-import { Formik, Field, Form, useField, useFormikContext } from "formik";
-import useSearch from "../hooks/api/useSearch";
+import { Formik, Field, Form, useField } from "formik";
 import Spinner from "../components/icons/Spinner";
 import SongList from "../components/ui/SongList";
 import { HiOutlineFilter } from "react-icons/hi";
 import IconContainer from "../components/icons/IconContainer";
-import { useMutation } from "react-query";
+import { useInfiniteQuery } from "react-query";
 import { useSearchHistory } from "../store";
 import useVisible from "../hooks/useVisible";
 
@@ -26,10 +25,21 @@ const InputTypes = [
 ];
 
 const SearchResult = ({ resultType, data }) => {
+  const uniqueIdSet = new Set();
   if (resultType === "album") {
     return (
       <div className="py-6 px-4 sm:px-8">
-        <AlbumList data={data} />
+        <AlbumList.Container>
+          {data.map((page, i) => (
+            <>
+              {process_api_data(page.results).map((pageItem, j) => {
+                if (uniqueIdSet.has(pageItem.collectionId)) return null;
+                uniqueIdSet.add(pageItem.collectionId);
+                return <AlbumList.Item key={`${i} ${j}`} data={pageItem} />;
+              })}
+            </>
+          ))}
+        </AlbumList.Container>
       </div>
     );
   } else if (resultType === "song") {
@@ -69,12 +79,6 @@ const TabField = ({}) => {
 };
 
 export default function Search() {
-  const [searchResult, setSearchResult] = useLocalStorageState(
-    "search_result",
-    []
-  );
-  const [page, setPage] = useState(1);
-  const [allData, setAllData] = useState([]);
   const [submittedValues, setSubmittedValues] = useLocalStorageState(
     "saerch_values",
     {
@@ -83,8 +87,6 @@ export default function Search() {
       inputType: InputTypes[0].value,
     }
   );
-  const [submitted, setSubmitted] = useState(false);
-
   const tailItemRef = useRef();
   const tailItemObserverEntry = useVisible(tailItemRef, {});
 
@@ -104,28 +106,56 @@ export default function Search() {
 
   console.log("submitted formvalues", submittedValues);
 
-  const { data, error } = useSearch(submitted, submittedValues?.searchText, {
-    entity: submittedValues?.resultType,
-    attribute: submittedValues?.inputType,
-    limit: 25,
-    offset: (page - 1) * 25,
-  });
+  // fetch the data
 
-  useEffect(() => {
-    if (submitted) {
-      setSubmitted(false);
+  const itemsPerPage = 20;
+
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    refetch,
+    isFetching,
+    hasNextPage,
+    fetchNextPage,
+  } = useInfiniteQuery(
+    [
+      {
+        term: submittedValues?.searchText,
+        entity: submittedValues?.resultType,
+        attribute: submittedValues?.inputType,
+      },
+    ],
+    ({
+      pageParam = {
+        term: submittedValues?.searchText,
+        entity: submittedValues?.resultType,
+        attribute: submittedValues?.inputType,
+        limit: itemsPerPage,
+        offset: 0,
+      },
+    }) => search_itunes(pageParam),
+    {
+      getNextPageParam: (lastPage, pages) =>
+        lastPage.resultCount != 0 && {
+          term: submittedValues?.searchText,
+          entity: submittedValues?.resultType,
+          attribute: submittedValues?.inputType,
+          limit: itemsPerPage,
+          offset: pages.length * itemsPerPage,
+        },
     }
-  }, [submitted]);
+  );
 
   useEffect(() => {
-    setSubmitted(true);
-  }, [submittedValues]);
+    if (tailItemObserverEntry?.isIntersecting) {
+      console.log("tail visible");
+      fetchNextPage();
+    }
+  }, [tailItemObserverEntry?.isIntersecting, fetchNextPage]);
 
-  useEffect(() => {
-    console.log("tail visible");
-  }, [tailItemObserverEntry?.isIntersecting]);
-
-  console.log("render search page", { searchResult });
+  console.log("render search page", { data });
 
   return (
     <div className="flex flex-col py-4 lg:px-0">
@@ -144,7 +174,7 @@ export default function Search() {
           addHistory(values.searchText);
         }}
       >
-        {({ value }) => (
+        {() => (
           <Form className="px-4 sm:px-8 flex flex-col lg:items-stretch gap-4">
             <div className="w-full flex justify-center items-center">
               <div className="w-full flex gap-2 items-center md:max-w-lg">
@@ -181,14 +211,14 @@ export default function Search() {
         )}
       </Formik>
       <div className="">
-        {error ? (
+        {isError ? (
           <div className="py-3 px-4 bg-red-200 rounded-lg">
             <span className="text-lg">An error occurred</span>
           </div>
-        ) : data ? (
+        ) : data?.pages ? (
           <div>
             <SearchResult
-              data={process_api_data(data.results)}
+              data={data.pages}
               resultType={submittedValues?.resultType}
             />
             <div className="" ref={tailItemRef}></div>

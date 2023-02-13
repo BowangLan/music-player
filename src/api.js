@@ -17,27 +17,19 @@ const fetch_json = (...params) => {
   return fetch(...params).then((res) => res.json());
 };
 
-export const search_itunes = (term, { ...options }) => {
-  let url = "https://itunes.apple.com/search?term=" + term;
-  const allowed_option_keys = [
-    "limit",
-    "offset",
-    "entity",
-    "attribute",
-    "country",
-  ];
-
-  Object.keys(options).forEach((k) => {
-    url += "&" + k + "=" + options[k];
-  });
+export const search_itunes = (params) => {
+  console.log('use search api, params: ', params);
+  let url = "https://itunes.apple.com/search?" + contruct_url_query(params);
 
   console.log("url: " + url);
 
-  return fetch(url)
-    .then((response) => {
-      return response.json();
-    })
-    .catch((err) => err);
+  return fetch_json(url);
+
+  // return fetch(url)
+  //   .then((response) => {
+  //     return response.json();
+  //   })
+  //   .catch((err) => err);
 };
 
 const itunes_lookup = (params) => {
